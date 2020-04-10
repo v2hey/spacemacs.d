@@ -68,7 +68,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-frozen-packages '()
 
    ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '()
+   dotspacemacs-excluded-packages '(vi-tilde-fringe)
 
    ;; Defines the behaviour of Spacemacs when installing packages.
    ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
@@ -503,6 +503,10 @@ before packages are loaded."
   ;; org
   (setq org-agenda-files (list "~/chest/emacs/spacemacs-me/org/org_manual.org"))
   (global-set-key (kbd "C-c a") 'org-agenda)
+
+  ;; Make customize-group configs in its own file
+  (setq custom-file (expand-file-name "custom.el" dotspacemacs-directory))
+  (load custom-file 'no-error 'no-message)
 
   ;; popwin
   (popwin-mode t)
