@@ -1,9 +1,3 @@
-;; keybindings.el --- My Layer packages File for Spacemacs
-;;
-;; This file is not part of GNU Emacs.
-;;
-;; License: GPLv3
-
 ;; A complementary binding to the apropos-command (C-h a)
 (define-key 'help-command "A" 'apropos)
 (define-key 'help-command (kbd "C-f") 'find-function)
