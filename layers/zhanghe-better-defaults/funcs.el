@@ -32,6 +32,13 @@ Position the cursor at its beginning, according to the current mode."
   (describe-variable 'major-mode))
 
 
+(defun zhanghe/mark-region-and-edit ()
+  (interactive)
+  (if (region-active-p)
+      (mc/mark-next-like-this 1)
+    (er/expand-region 1)))
+
+
 (defun zhanghe/rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."
   (interactive)

@@ -1,4 +1,4 @@
-;; 1. global-set-key 和define-key 的区别：
+;; 1. global-set-key、define-key、bind-key* 的区别：
 ;;    global-set-key 函数，定义于 subr.el, 添加内容到 global-map，作用范围是全局。
 ;;    define-key 函数，内置 C 函数, (define-key-set 'foo-mode-map ...) 添加内容到 foo-mode-map，作用范围是 foo-mode。
 ;;    global-map 变量，定义于 subr.el
@@ -9,6 +9,8 @@
 ;;    (define-key (current-global-map) ...)
 ;;    (define-key global-map ...)
 ;;
+;;    bind-key* 是方便用户使用的宏, 它的优先级又要比各个模式的map的优先级要高
+
 
 ;; A complementary binding to the apropos-command (C-h a)
 (define-key 'help-command "A" 'apropos)
@@ -24,10 +26,10 @@
 ;; hippie-expand, default kbd "M-s"
 (global-set-key (kbd "s-/") 'hippie-expand)
 (global-set-key [remap fill-paragraph] #'endless/fill-or-unfill)
-
+(global-set-key (kbd "C-s-h") 'mark-defun)
+(global-set-key (kbd "s-l") 'goto-line)
 (global-set-key (kbd "C-c i e") 'spacemacs/auto-yasnippet-expand)
-
-
+(global-set-key (kbd "C-`") 'toggle-input-method)
 
 ;; org
 (global-set-key (kbd "C-c a") 'org-agenda)
@@ -38,28 +40,26 @@
 ;; other
 (global-set-key (kbd "C-c y") 'youdao-dictionary-search-at-point+)
 
+;; misc
+(bind-key* "s-r" 'mc/reverse-regions)
+
+
+
 ;; ============================== my defun
 ;; better defaults
 (global-set-key (kbd "<f8>") 'zhanghe/show-current-buffer-major-mode)
 (global-set-key [(shift return)] 'zhanghe/smart-open-line)
 (global-set-key (kbd "C-M-\\") 'zhanghe/indent-region-or-buffer)
+(global-set-key (kbd "M-r") 'zhanghe/mark-region-and-edit)
+
+;; programming
+(global-set-key (kbd "<f5>") 'zhanghe/run-current-file)
 
 
 
 
-;; ======hrere
-;; some easy functions for navigate functions
-;;C-M-a beginning-of-defun
-;;C-M-e end-of-defun
-;;C-M-h mark-defun
-(global-set-key (kbd "C-s-h") 'mark-defun)
 
-(global-set-key (kbd "s-l") 'goto-line)
-;; (global-set-key (kbd "s-s") 'save-buffer)
-(global-set-key (kbd "C-`") 'toggle-input-method)
-(global-set-key (kbd "s-d") 'zilongshanren/my-mc-mark-next-like-this)
-(bind-key* "s-r" 'mc/reverse-regions)
-(global-set-key (kbd "<f5>") 'zilongshanren/run-current-file)
+
 
 ;; "http://endlessparentheses.com/transposing-keybinds-in-emacs.html?source=rss"
 ;; (global-set-key "\C-t" #'transpose-lines)
