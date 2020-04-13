@@ -57,7 +57,7 @@ This function should only modify configuration layer settings."
           ;;magit-refs-show-commit-count 'all
           ;;magit-revision-show-gravatars nil
           )
-
+     ;; progrm
      ;; lsp
      ;; dap
      org
@@ -102,7 +102,7 @@ This function should only modify configuration layer settings."
             shell-default-shell 'ansi-term
             shell-default-term-shell "/bin/zsh")
 
-     ;; docker
+     ;; docker chiense
      latex
      deft
      markdown
@@ -290,10 +290,10 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-colorize-cursor-according-to-state t
 
    ;; Default font or prioritized list of fonts.
-   dotspacemacs-default-font '("Source Code Pro"
-                               :size 17
-                               :weight medium
-                               :width medium)
+   dotspacemacs-default-font '("Fira Code"
+                               :size 19
+                               :weight regular
+                               :width regular)
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
@@ -365,7 +365,7 @@ It should only modify the values of Spacemacs settings."
    ;; the commands bound to the current keystroke sequence. (default 0.4)
    dotspacemacs-which-key-delay 0.4
 
-  ;; Which-key frame position. Possible values are `right', `bottom' and
+   ;; Which-key frame position. Possible values are `right', `bottom' and
    ;; `right-then-bottom'. right-then-bottom tries to display the frame to the
    ;; right; if there is insufficient space it displays it at the bottom.
    ;; (default 'bottom)
@@ -483,7 +483,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
    ;; (default '("rg" "ag" "pt" "ack" "grep"))
-   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
+   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
 
    ;; Format specification for setting the frame title.
    ;; %a - the `abbreviated-file-name', or `buffer-name'
@@ -599,6 +599,7 @@ before packages are loaded."
   (global-set-key (kbd "M-h M-k") 'find-funciton-on-key)
   (define-key isearch-mode-map "\C-h" 'isearch-delete-char)
   (global-linum-mode 1)
+  (setq-default line-spacing 6)
 
   ;; evil escape
   (setq-default evil-escape-key-sequence "jk")

@@ -7,9 +7,9 @@
 
 
 (configuration-layer/declare-layers '(
-                                      zhanghe-misc
-                                      zhanghe-programming
-                                      zhanghe-ui
-                                      zhanghe-org
-                                      zhanghe-better-defaults
+                                      ;; zhanghe-misc
+                                      ;; zhanghe-programming
+                                      ;; zhanghe-ui
+                                      ;; zhanghe-org
+                                      ;; zhanghe-better-defaults
                                       ))
