@@ -289,8 +289,8 @@ It should only modify the values of Spacemacs settings."
    ;; (default t)
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font or prioritized list of fonts.
-   dotspacemacs-default-font '("Fira Code"
+   ;; Default font or prioritized list of fonts.  测试
+   dotspacemacs-default-font '("WenQuanYi Zen Hei Mono"
                                :size 19
                                :weight regular
                                :width regular)
@@ -599,7 +599,7 @@ before packages are loaded."
   (global-set-key (kbd "M-h M-k") 'find-funciton-on-key)
   (define-key isearch-mode-map "\C-h" 'isearch-delete-char)
   (global-linum-mode 1)
-  (setq-default line-spacing 6)
+  (setq-default line-spacing 4)
 
   ;; evil escape
   (setq-default evil-escape-key-sequence "jk")
