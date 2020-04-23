@@ -1,4 +1,15 @@
-(setq zhanghe-misc-packages
+;;; packages.el --- zilongshanren Layer packages File for Spacemacs
+;;
+;; Copyright (c) 2014-2016 zilongshanren
+;;
+;; Author: zilongshanren <guanghui8827@gmail.com>
+;; URL: https://github.com/zilongshanren/spacemacs-private
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; License: GPLv3
+
+(setq zilongshanren-misc-packages
       '(
         helm-github-stars
         helm
@@ -13,9 +24,9 @@
         evil
         fcitx
         discover-my-major
-        ;; ace-window
+        ace-window
         avy
-        ;; 4clojure
+        4clojure
         persp-mode
         tiny
         expand-region
@@ -25,7 +36,7 @@
         markdown-mode
         swiper
         magit
-        ;; git-messenger
+        git-messenger
         gist
         hydra
         wrap-region
@@ -33,24 +44,128 @@
         golden-ratio
         (highlight-global :location (recipe :fetcher github :repo "glen-dai/highlight-global"))
         symbol-overlay
-        ;; chinese-conv
+        ;; browse-at-remote
+        chinese-conv
         ;; chinese-wbim
         pyim
-        ;; lispyville
+        lispyville
         popup
         ))
 
+(defun zilongshanren-misc/post-init-popup ()
+  (use-package popup
+    :config
+    (progn
+      (define-key popup-menu-keymap (kbd "C-j") 'popup-next)
+      (define-key popup-menu-keymap (kbd "C-k") 'popup-previous)
+      )))
 
-
-
-(defun zhanghe-misc/init-helm-github-stars ()
-  (use-package helm-github-stars
-    :commands (helm-github-stars)
+(defun zilongshanren-misc/init-lispyville ()
+  (use-package lispyville
     :init
-    (setq helm-github-stars-username "v2hey")))
+    (progn
+      (add-hook 'lispy-mode-hook #'lispyville-mode)
+      )
+    ))
+
+(defun zilongshanren-misc/post-init-chinese-conv ()
+  (setq chinese-conv-opencc-program "/usr/local/bin/opencc")
+  (setq chinese-conv-opencc-data "/usr/local/share/opencc/"))
+
+(defun zilongshanren-misc/post-init-expand-region ()
+  (with-eval-after-load 'expand-region
+    (when (configuration-layer/package-used-p 'helm-ag)
+      (defadvice er/prepare-for-more-expansions-internal
+          (around helm-ag/prepare-for-more-expansions-internal activate)
+        ad-do-it
+        (let ((new-msg (concat (car ad-return-value)
+                               ", H to highlight in buffers"
+                               ", / to search in project, "
+                               "f to search in files, "
+                               "b to search in opened buffers"))
+              (new-bindings (cdr ad-return-value)))
+          (cl-pushnew
+           '("H" (lambda ()
+                   (call-interactively
+                    'zilongshanren/highlight-dwim)))
+           new-bindings)
+          (cl-pushnew
+           '("/" (lambda ()
+                   (call-interactively
+                    'spacemacs/helm-project-smart-do-search-region-or-symbol)))
+           new-bindings)
+          (cl-pushnew
+           '("f" (lambda ()
+                   (call-interactively
+                    'spacemacs/helm-files-smart-do-search-region-or-symbol)))
+           new-bindings)
+          (cl-pushnew
+           '("b" (lambda ()
+                   (call-interactively
+                    'spacemacs/helm-buffers-smart-do-search-region-or-symbol)))
+           new-bindings)
+          (setq ad-return-value (cons new-msg new-bindings)))))))
+
+(defun zilongshanren-misc/init-browse-at-remote ()
+  (use-package browse-at-remote
+    :defer t
+    :init (spacemacs/set-leader-keys "gho" 'browse-at-remote)))
+
+(defun zilongshanren-misc/init-highlight-global ()
+  (use-package highlight-global
+    :init
+    (progn
+
+      (setq-default highlight-faces
+        '(('hi-red-b . 0)
+          ('hi-yellow . 0)
+          ('hi-pink . 0)
+          ('hi-blue-b . 0))))))
+
+(defun zilongshanren-misc/post-init-symbol-overlay ()
+  (with-eval-after-load 'symbol-overlay
+    (progn
+      (spacemacs/transient-state-register-add-bindings 'symbol-overlay
+      '((">" symbol-overlay-jump-last)
+        ("s" spacemacs/swiper-region-or-symbol)
+        ("<" symbol-overlay-jump-first))))))
+
+(defun zilongshanren-misc/post-init-golden-ratio ()
+  (with-eval-after-load 'golden-ratio
+    (dolist (mode '("dired-mode" "occur-mode"))
+      (add-to-list 'golden-ratio-exclude-modes mode))
+    (dolist (n '("COMMIT_EDITMSG"))
+      (add-to-list 'golden-ratio-exclude-buffer-names n))))
+
+(defun zilongshanren-misc/post-init-ranger ()
+  ;; https://emacs-china.org/t/ranger-golden-ratio/964/2
+  (defun my-ranger ()
+    (interactive)
+    (if golden-ratio-mode
+        (progn
+          (golden-ratio-mode -1)
+          (ranger)
+          (setq golden-ratio-previous-enable t))
+      (progn
+        (ranger)
+        (setq golden-ratio-previous-enable nil))))
+
+  (defun my-quit-ranger ()
+    (interactive)
+    (if golden-ratio-previous-enable
+        (progn
+          (ranger-close)
+          (golden-ratio-mode 1))
+      (ranger-close)))
+
+  (with-eval-after-load 'ranger
+    (progn
+      (define-key ranger-normal-mode-map (kbd "q") 'my-quit-ranger)))
+
+  (spacemacs/set-leader-keys "ar" 'my-ranger))
 
 ;; copy from spacemacs helm layer
-(defun zhanghe-misc/init-helm-ag ()
+(defun zilongshanren-misc/init-helm-ag ()
   (use-package helm-ag
     :defer t
     :init
@@ -359,182 +474,13 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         (kbd "gr") 'helm-ag--update-save-results
         (kbd "q") 'quit-window))))
 
-
-(defun zhanghe-misc/post-init-helm ()
-  (with-eval-after-load 'helm
-    (progn
-      (setq helm-buffer-max-length 56)
-
-      ;; limit max number of matches displayed for speed
-      (setq helm-candidate-number-limit 100)
-      ;; ignore boring files like .o and .a
-      (setq helm-ff-skip-boring-files t)
-      ;; replace locate with spotlight on Mac
-      (setq helm-locate-command "mdfind -name %s %s")
-      (push "\\.emlx$" helm-boring-file-regexp-list)
-      )
-    ))
-
-
-(defun zhanghe-misc/post-init-persp-mode ()
-  (setq persp-kill-foreign-buffer-behaviour 'kill)
-  (setq persp-lighter nil)
-
-  (defun zhanghe/kill-other-persp-buffers (&optional arg)
-    "Kill all other buffers in current persp layout"
-    (interactive)
-    (when (yes-or-no-p (format "Killing all buffers except \"%s\"? "
-                               (buffer-name)))
-      (mapc 'persp-kill-buffer (delq (current-buffer) (persp-buffer-list)))
-      (persp-add-buffer (current-buffer))
-      (message "Buffers deleted!")))
-  ;; (when (fboundp 'spacemacs|define-custom-layout)
-  ;;  (spacemacs|define-custom-layout "@work"
-  ;;  :binding "w"
-  ;;:body
-  ;;(find-file "~/Github/HlMJ_js/assets/scripts/Login/LoginScene.ts")))
-  ;;(when (fboundp 'spacemacs|define-custom-layout)
-  ;;  (spacemacs|define-custom-layout "@blog"
-  ;;    :binding "b"
-  ;;    :body
-  ;; (find-file "~/zhanghe.com/config.toml")))
-  )
-
-(defun zhanghe-misc/post-init-expand-region ()
-  (with-eval-after-load 'expand-region
-    (when (configuration-layer/package-used-p 'helm-ag)
-      (defadvice er/prepare-for-more-expansions-internal
-          (around helm-ag/prepare-for-more-expansions-internal activate)
-        ad-do-it
-        (let ((new-msg (concat (car ad-return-value)
-                               ", H to highlight in buffers"
-                               ", / to search in project, "
-                               "f to search in files, "
-                               "b to search in opened buffers"))
-              (new-bindings (cdr ad-return-value)))
-          (cl-pushnew
-           '("H" (lambda ()
-                   (call-interactively
-                    'zhanghe/highlight-dwim)))
-           new-bindings)
-          (cl-pushnew
-           '("/" (lambda ()
-                   (call-interactively
-                    'spacemacs/helm-project-smart-do-search-region-or-symbol)))
-           new-bindings)
-          (cl-pushnew
-           '("f" (lambda ()
-                   (call-interactively
-                    'spacemacs/helm-files-smart-do-search-region-or-symbol)))
-           new-bindings)
-          (cl-pushnew
-           '("b" (lambda ()
-                   (call-interactively
-                    'spacemacs/helm-buffers-smart-do-search-region-or-symbol)))
-           new-bindings)
-          (setq ad-return-value (cons new-msg new-bindings)))))))
-
-
-(defun zhanghe-misc/post-init-projectile ()
-  (progn
-    (with-eval-after-load 'projectile
-      (progn
-        (setq projectile-completion-system 'ivy)
-        (add-to-list 'projectile-other-file-alist '("html" "js"))
-        (add-to-list 'projectile-other-file-alist '("js" "html"))))
-
-    (defvar my-simple-todo-regex "\\<\\(FIXME\\|TODO\\|BUG\\):")
-
-    (defun my-simple-todo ()
-      "When in a project, create a `multi-occur' buffer matching the
-  regex in `my-simple-todo-regex' across all buffers in the
-  current project. Otherwise do `occur' in the current file."
-      (interactive)
-      (if (projectile-project-p)
-          (multi-occur (projectile-project-buffers) my-simple-todo-regex)
-        (occur my-simple-todo-regex)))
-    (spacemacs/set-leader-keys "pf" 'zhanghe/open-file-with-projectile-or-counsel-git)
-    (spacemacs/set-leader-keys "pt" 'my-simple-todo)))
-
-
-(defun zhanghe-misc/post-init-popup ()
-  (use-package popup
-    :config
-    (progn
-      (define-key popup-menu-keymap (kbd "C-j") 'popup-next)
-      (define-key popup-menu-keymap (kbd "C-k") 'popup-previous)
-      )))
-
-
-;; (defun zhanghe-misc/post-init-chinese-conv ()
-;;   (setq chinese-conv-opencc-program "/usr/local/bin/opencc")
-;;   (setq chinese-conv-opencc-data "/usr/local/share/opencc/"))
-
-
-(defun zhanghe-misc/init-highlight-global ()
-  (use-package highlight-global
-    :init
-    (progn
-      (setq-default highlight-faces
-                    '(('hi-red-b . 0)
-                      ('hi-yellow . 0)
-                      ('hi-pink . 0)
-                      ('hi-blue-b . 0))))))
-
-
-(defun zhanghe-misc/post-init-symbol-overlay ()
-  (with-eval-after-load 'symbol-overlay
-    (progn
-      (spacemacs/transient-state-register-add-bindings 'symbol-overlay
-        '((">" symbol-overlay-jump-last)
-          ("s" spacemacs/swiper-region-or-symbol)
-          ("<" symbol-overlay-jump-first))))))
-
-
-(defun zhanghe-misc/post-init-golden-ratio ()
-  (with-eval-after-load 'golden-ratio
-    (dolist (mode '("dired-mode" "occur-mode"))
-      (add-to-list 'golden-ratio-exclude-modes mode))
-    (dolist (n '("COMMIT_EDITMSG"))
-      (add-to-list 'golden-ratio-exclude-buffer-names n))))
-
-
-(defun zhanghe-misc/post-init-ranger ()
-  ;; https://emacs-china.org/t/ranger-golden-ratio/964/2
-  (defun my-ranger ()
-    (interactive)
-    (if golden-ratio-mode
-        (progn
-          (golden-ratio-mode -1)
-          (ranger)
-          (setq golden-ratio-previous-enable t))
-      (progn
-        (ranger)
-        (setq golden-ratio-previous-enable nil))))
-
-  (defun my-quit-ranger ()
-    (interactive)
-    (if golden-ratio-previous-enable
-        (progn
-          (ranger-close)
-          (golden-ratio-mode 1))
-      (ranger-close)))
-
-  (with-eval-after-load 'ranger
-    (progn
-      (define-key ranger-normal-mode-map (kbd "q") 'my-quit-ranger)))
-
-  (spacemacs/set-leader-keys "ar" 'my-ranger))
-
-
-
-(defun zhanghe-misc/post-init-hydra ()
+(defun zilongshanren-misc/post-init-hydra ()
   (progn
     (defhydra hydra-hotspots (:color blue)
       "Hotspots"
       ("b" blog-admin-start "blog")
       ("g" helm-github-stars "helm github stars")
-      ("r" zhanghe/run-current-file "run current file"))
+      ("r" zilongshanren/run-current-file "run current file"))
 
     (defhydra multiple-cursors-hydra (:hint nil)
       "
@@ -584,10 +530,10 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     (spacemacs/set-leader-keys "oo" 'hydra-hotspots/body)
     ;; (bind-key*  "<f4>" 'hydra-apropos/body)
     (spacemacs/set-leader-keys "oh" 'hydra-apropos/body)
+
     ))
 
-
-(defun zhanghe-misc/post-init-gist ()
+(defun zilongshanren-misc/post-init-gist ()
   (use-package gist
     :defer t
     :init
@@ -622,8 +568,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         "." 'spacemacs/gist-list-mode-transient-state/body))
     ))
 
-
-(defun zhanghe-misc/init-peep-dired ()
+(defun zilongshanren-misc/init-peep-dired ()
   ;;preview files in dired
   (use-package peep-dired
     :defer t
@@ -633,14 +578,13 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
                 ("P" . peep-dired))))
 
 
-(defun zhanghe-misc/post-init-flyspell-correct ()
+(defun zilongshanren-misc/post-init-flyspell-correct ()
   (progn
     (with-eval-after-load 'flyspell
       (define-key flyspell-mode-map (kbd "C-;") 'flyspell-correct-previous))
     (setq flyspell-correct-interface 'flyspell-correct-ivy)))
 
-
-(defun zhanghe-misc/post-init-smartparens ()
+(defun zilongshanren-misc/post-init-smartparens ()
   (use-package smartparens
     :defer t
     :init
@@ -656,15 +600,13 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         (kbd "(>") 'sp-backward-barf-sexp
         (kbd "(<") 'sp-backward-slurp-sexp))))
 
-
-(defun zhanghe-misc/init-tiny ()
+(defun zilongshanren-misc/init-tiny ()
   (use-package tiny
     :defer t
     :init
     (spacemacs/set-leader-keys "oe" 'tiny-expand)))
 
-
-(defun zhanghe-misc/post-init-helm ()
+(defun zilongshanren-misc/post-init-helm ()
   (with-eval-after-load 'helm
     (progn
       (setq helm-buffer-max-length 56)
@@ -679,25 +621,32 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       )
     ))
 
+(defun zilongshanren-misc/init-helm-github-stars ()
+  (use-package helm-github-stars
+    :commands (helm-github-stars)
+    :init
+    (setq helm-github-stars-username "zilongshanren")))
 
-(defun zhanghe-misc/post-init-fcitx ()
+
+
+
+(defun zilongshanren-misc/post-init-fcitx ()
   (fcitx-aggressive-setup))
 
-
-(defun zhanghe-misc/post-init-command-log ()
+(defun zilongshanren-misc/post-init-command-log ()
   (with-eval-after-load 'global-command-log-mode
     (setq clm/log-command-exceptions* (append clm/log-command-exceptions*
                                               '(evil-next-visual-line
                                                 evil-previous-visual-line)))))
 
 
-(defun zhanghe-misc/init-litable ()
+
+(defun zilongshanren-misc/init-litable ()
   (use-package litable
     :init
     :defer t))
 
-
-(defun zhanghe-misc/init-osx-dictionary ()
+(defun zilongshanren-misc/init-osx-dictionary ()
   (use-package osx-dictionary
     :init
     (progn
@@ -707,13 +656,29 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       )))
 
 
-(defun zhanghe-misc/post-init-avy ()
+(defun zilongshanren-misc/init-4clojure ()
+  (use-package 4clojure
+    :init
+    (progn
+      (spacemacs/declare-prefix "o4" "4clojure")
+      (spacemacs/set-leader-keys "o4q" '4clojure-open-question)
+      (spacemacs/set-leader-keys "o4n" '4clojure-next-question)
+      (spacemacs/set-leader-keys "o4p" '4clojure-previous-question)
+      (spacemacs/set-leader-keys "o4c" '4clojure-check-answers)
+      )))
+
+
+
+
+(defun zilongshanren-misc/post-init-avy ()
   (progn
     (global-set-key (kbd "C-s-'") 'avy-goto-char-2)
     (global-set-key (kbd "M-'") 'avy-goto-char-2)))
 
+(defun zilongshanren-misc/post-init-ace-window ()
+  (global-set-key (kbd "C-x C-o") #'ace-window))
 
-(defun zhanghe-misc/init-discover-my-major ()
+(defun zilongshanren-misc/init-discover-my-major ()
   (use-package discover-my-major
     :defer t
     :init
@@ -723,7 +688,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       )))
 
 
-(defun zhanghe-misc/post-init-elfeed ()
+(defun zilongshanren-misc/post-init-elfeed ()
   (use-package elfeed
     :init
     (global-set-key (kbd "C-x w") 'elfeed)
@@ -759,12 +724,12 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         "G" 'elfeed-update
         "g" 'elfeed-search-update--force)
 
-      (defun zhanghe/elfeed-mark-all-as-read ()
+      (defun zilong/elfeed-mark-all-as-read ()
         (interactive)
         (mark-whole-buffer)
         (elfeed-search-untag-all-unread))
 
-      (define-key elfeed-search-mode-map (kbd "R") 'zhanghe/elfeed-mark-all-as-read)
+      (define-key elfeed-search-mode-map (kbd "R") 'zilong/elfeed-mark-all-as-read)
 
       (defadvice elfeed-show-yank (after elfeed-show-yank-to-kill-ring activate compile)
         "Insert the yanked text from x-selection to kill ring"
@@ -772,8 +737,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
 
       (ad-activate 'elfeed-show-yank))))
 
-
-(defun zhanghe-misc/post-init-evil ()
+(defun zilongshanren-misc/post-init-evil ()
   (progn
     (setcdr evil-insert-state-map nil)
     (define-key evil-insert-state-map [escape] 'evil-normal-state)
@@ -783,14 +747,14 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
 
     (push "TAGS" spacemacs-useless-buffers-regexp)
 
-    ;; (adjust-major-mode-keymap-with-evil "git-timemachine")
-    ;; (adjust-major-mode-keymap-with-evil "tabulated-list")
+    (adjust-major-mode-keymap-with-evil "git-timemachine")
+    (adjust-major-mode-keymap-with-evil "tabulated-list")
 
     (define-key evil-visual-state-map "p" 'evil-paste-after-from-0)
     (define-key evil-insert-state-map (kbd "C-r") 'evil-paste-from-register)
 
     ;; ;; change evil initial mode state
-    (cl-loop for (mode . state) in
+    (loop for (mode . state) in
           '((shell-mode . normal)
             (minibuffer-inactive-mode . emacs))
           do (evil-set-initial-state mode state))
@@ -813,7 +777,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     (define-key evil-visual-state-map (kbd "y") 'my-evil-yank)
 
     (define-key evil-normal-state-map
-      (kbd "Y") 'zhanghe/yank-to-end-of-line)
+      (kbd "Y") 'zilongshanren/yank-to-end-of-line)
 
     ;; rebind g,k to gj and gk
     ;; (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
@@ -849,7 +813,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     (define-key evil-visual-state-map (kbd ",/") 'evilnc-comment-or-uncomment-lines)
     ;; (define-key evil-visual-state-map (kbd "x") 'er/expand-region)
     ;; (define-key evil-visual-state-map (kbd "X") 'er/contract-region)
-    (define-key evil-visual-state-map (kbd "C-r") 'zhanghe/evil-quick-replace)
+    (define-key evil-visual-state-map (kbd "C-r") 'zilongshanren/evil-quick-replace)
     (define-key evil-visual-state-map (kbd "mn") 'mc/mark-next-like-this)
     (define-key evil-visual-state-map (kbd "mp") 'mc/mark-previous-like-this)
     (define-key evil-visual-state-map (kbd "ma") 'mc/mark-all-like-this)
@@ -884,7 +848,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     (define-key evil-insert-state-map (kbd "C-z") 'evil-emacs-state)
     ;; This will break visual column edit
     ;; enable hybrid editing style
-    ;; (defadvice evil-insert-state (around zhanghe/holy-mode activate)
+    ;; (defadvice evil-insert-state (around zilongshanren/holy-mode activate)
     ;;   "Preparing the holy water flasks."
     ;;   (evil-emacs-state))
     ;; disable c-[ temporally
@@ -894,12 +858,11 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     ;; (define-key evil-emacs-state-map [escape] 'evil-normal-state)
     ))
 
-
-(defun zhanghe-misc/init-visual-regexp ()
+(defun zilongshanren-misc/init-visual-regexp ()
   (use-package visual-regexp
     :commands (vr/replace vr/query-replace)))
 
-(defun zhanghe-misc/init-visual-regexp-steroids ()
+(defun zilongshanren-misc/init-visual-regexp-steroids ()
   (use-package visual-regexp-steroids
     :commands (vr/select-replace vr/select-query-replace)
     :init
@@ -907,7 +870,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       (define-key global-map (kbd "C-c r") 'vr/replace)
       (define-key global-map (kbd "C-c q") 'vr/query-replace))))
 
-(defun zhanghe-misc/init-multiple-cursors ()
+(defun zilongshanren-misc/init-multiple-cursors ()
   (use-package multiple-cursors
     :init
     (progn
@@ -942,7 +905,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     (setq mc/cmds-to-run-once
           '(
             counsel-M-x
-            zhanghe/my-mc-mark-next-like-this))
+            zilongshanren/my-mc-mark-next-like-this))
     (setq mc/cmds-to-run-for-all
           '(
             electric-newline-and-maybe-indent
@@ -980,12 +943,36 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
             orgtbl-hijacker-command-109))
     ))
 
+(defun zilongshanren-misc/post-init-persp-mode ()
+  (setq persp-kill-foreign-buffer-behaviour 'kill)
+  (setq persp-lighter nil)
 
-(defun zhanghe-misc/post-init-pyim ()
+  (defun zilongshanren-kill-other-persp-buffers (&optional arg)
+    "Kill all other buffers in current persp layout"
+    (interactive)
+    (when (yes-or-no-p (format "Killing all buffers except \"%s\"? "
+                               (buffer-name)))
+      (mapc 'persp-kill-buffer (delq (current-buffer) (persp-buffer-list)))
+      (persp-add-buffer (current-buffer))
+      (message "Buffers deleted!")))
+
+  (when (fboundp 'spacemacs|define-custom-layout)
+    (spacemacs|define-custom-layout "@work"
+      :binding "w"
+      :body
+      (find-file "~/Github/HlMJ_js/assets/scripts/Login/LoginScene.ts")))
+  (when (fboundp 'spacemacs|define-custom-layout)
+    (spacemacs|define-custom-layout "@blog"
+      :binding "b"
+      :body
+      (find-file "~/zilongshanren.com/config.toml")))
+  )
+
+(defun zilongshanren-misc/post-init-pyim ()
   (progn
     ;; use librime as wubi input
     ;; 参考这个设置 pyim 使用 liberime 库 https://emacs-china.org/t/mac-emacs-rime/ 需要emacs 26的dynamic module功能 
-    ;; 设置极点五笔可以参考https://github.com/zhanghe/rime-wubi86-jidian  
+    ;; 设置极点五笔可以参考https://github.com/zilongshanren/rime-wubi86-jidian  
     (eval-and-compile
       (if (fboundp 'window-inside-edges)
           ;; Emacs devel.
@@ -1044,8 +1031,33 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
           (liberime-select-schema "wubi_pinyin")
           (setq pyim-default-scheme 'rime))))))
 
+;; deprecated
+(defun zilongshanren-misc/post-init-chinese-wbim ()
+  (progn
+    
+    ;; (bind-key* ";" 'chinese-wbim-insert-ascii)
+    ;; (setq chinese-wbim-punc-translate-p nil)
 
-(defun zhanghe-misc/init-find-file-in-project ()
+    (setq chinese-wbim-tooltip-timeout 5)
+    (spacemacs/declare-prefix "ot" "Toggle")
+    (spacemacs/set-leader-keys
+      "otp" 'chinese-wbim-punc-translate-toggle)
+    (setq chinese-wbim-wb-use-gbk t)
+
+    (setq chinese-wbim-use-tooltip t)
+    
+    (add-hook 'chinese-wbim-wb-load-hook
+              (lambda ()
+                (let ((map (chinese-wbim-mode-map)))
+                  (define-key map "-" 'chinese-wbim-previous-page)
+                  (define-key map "=" 'chinese-wbim-next-page))))
+    ))
+
+
+(defun zilongshanren-misc/post-init-evil-escape ()
+  (setq evil-escape-delay 0.2))
+
+(defun zilongshanren-misc/init-find-file-in-project ()
   (use-package find-file-in-project
     :defer t
     :config
@@ -1068,13 +1080,39 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       (ad-activate 'find-file-in-project))))
 
 
-(defun zhanghe-misc/post-init-prodigy ()
+
+
+(defun zilongshanren-misc/post-init-projectile ()
+  (progn
+    (with-eval-after-load 'projectile
+      (progn
+        (setq projectile-completion-system 'ivy)
+        (add-to-list 'projectile-other-file-alist '("html" "js"))
+        (add-to-list 'projectile-other-file-alist '("js" "html"))))
+
+    (defvar my-simple-todo-regex "\\<\\(FIXME\\|TODO\\|BUG\\):")
+
+    (defun my-simple-todo ()
+      "When in a project, create a `multi-occur' buffer matching the
+  regex in `my-simple-todo-regex' across all buffers in the
+  current project. Otherwise do `occur' in the current file."
+      (interactive)
+      (if (projectile-project-p)
+          (multi-occur (projectile-project-buffers) my-simple-todo-regex)
+        (occur my-simple-todo-regex)))
+    (spacemacs/set-leader-keys "pf" 'zilongshanren/open-file-with-projectile-or-counsel-git)
+    (spacemacs/set-leader-keys "pt" 'my-simple-todo)))
+
+
+
+(defun zilongshanren-misc/post-init-prodigy ()
   (progn
     (prodigy-define-tag
       :name 'jekyll
       :env '(("LANG" "en_US.UTF-8")
              ("LC_ALL" "en_US.UTF-8")))
     ;; define service
+    
 
     (prodigy-define-service
       :name "Hugo Server"
@@ -1095,14 +1133,14 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       :kill-process-buffer-on-stop t)
 
     ;; (defun refresh-chrome-current-tab (beg end length-before)
-    ;;   (call-interactively 'zhanghe/browser-refresh--chrome-applescript))
+    ;;   (call-interactively 'zilongshanren/browser-refresh--chrome-applescript))
     ;; ;; add watch for prodigy-view-mode buffer change event
     ;; (add-hook 'prodigy-view-mode-hook
     ;;           #'(lambda() (set (make-local-variable 'after-change-functions) #'refresh-chrome-current-tab)))
 
     ))
 
-(defun zhanghe-misc/init-moz-controller ()
+(defun zilongshanren-misc/init-moz-controller ()
   (use-package moz-controller
     :init
     (progn
@@ -1110,16 +1148,16 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
       (spacemacs|hide-lighter moz-controller-mode))))
 
 
-(defun zhanghe-misc/init-ag ()
+(defun zilongshanren-misc/init-ag ()
   (use-package ag
     :init))
 
-(defun zhanghe-misc/post-init-erc ()
+(defun zilongshanren-misc/post-init-erc ()
   (progn
     (add-hook 'erc-text-matched-hook 'my-erc-hook)
     (spaceline-toggle-erc-track-off)))
 
-(defun zhanghe-misc/init-wrap-region ()
+(defun zilongshanren-misc/init-wrap-region ()
   (use-package wrap-region
     :init
     (progn
@@ -1139,14 +1177,14 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
 
 
 
-(defun zhanghe-misc/init-keyfreq ()
+(defun zilongshanren-misc/init-keyfreq ()
   (use-package keyfreq
     :init
     (progn
       (keyfreq-mode t)
       (keyfreq-autosave-mode 1))))
 
-(defun zhanghe-misc/post-init-swiper ()
+(defun zilongshanren-misc/post-init-swiper ()
   "Initialize my package"
   (progn
     (setq ivy-use-virtual-buffers t)
@@ -1220,7 +1258,7 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
     (define-key global-map (kbd "C-s") 'my-swiper-search)))
 
 
-(defun zhanghe-misc/post-init-magit ()
+(defun zilongshanren-misc/post-init-magit ()
   (progn
     (with-eval-after-load 'magit
       (progn
@@ -1239,7 +1277,9 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         ;; insert the hidden files section in the magit status buffer.
         (magit-add-section-hook 'magit-status-sections-hook
                                 'magit-insert-skip-worktree-files nil t)
+
         (define-key magit-status-mode-map "ga" 'magit-jump-to-assume-unchanged)
+        
         (define-key magit-status-mode-map "gw" 'magit-jump-to-skip-worktree)
         ))
 
@@ -1251,12 +1291,18 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
 
     (eval-after-load 'magit
       '(define-key magit-mode-map (kbd "C-c g")
-         #'zhanghe/magit-visit-pull-request))
+         #'zilongshanren/magit-visit-pull-request))
 
     (setq magit-process-popup-time 10)))
 
+(defun zilongshanren-misc/post-init-git-messenger ()
+  (use-package git-messenger
+    :defer t
+    :config
+    (progn
+      (define-key git-messenger-map (kbd "f") 'zilong/github-browse-commit))))
 
-(defun zhanghe-misc/post-init-markdown-mode ()
+(defun zilongshanren-misc/post-init-markdown-mode ()
   (progn
     (add-to-list 'auto-mode-alist '("\\.mdown\\'" . markdown-mode))
 
@@ -1266,9 +1312,9 @@ Search for a search tool in the order provided by `dotspacemacs-search-tools'."
         ;;   (spacemacs|add-company-hook markdown-mode))
 
         (spacemacs/set-leader-keys-for-major-mode 'gfm-mode-map
-          "p" 'zhanghe/markdown-to-html)
+          "p" 'zilongshanren/markdown-to-html)
         (spacemacs/set-leader-keys-for-major-mode 'markdown-mode
-          "p" 'zhanghe/markdown-to-html)
+          "p" 'zilongshanren/markdown-to-html)
 
         (evil-define-key 'normal markdown-mode-map (kbd "TAB") 'markdown-cycle)
         ))

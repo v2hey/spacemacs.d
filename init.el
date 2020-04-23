@@ -20,139 +20,119 @@ This function should only modify configuration layer settings."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation 'nil
-
+   dotspacemacs-enable-lazy-installation nil
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
-   ;; If non-nil layers with lazy install support are lazy installed.
    dotspacemacs-ask-for-lazy-installation nil
-
+   ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
-
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     (ivy :variables
-          ivy-enable-advanced-buffer-information nil)
-
-     auto-completion
+     (ivy :variables ivy-enable-advanced-buffer-information nil)
      better-defaults
      ranger
      emoji
-
-     ;; (plantuml :variables plantuml-jar-path "~/.spacemacs.d/plantuml.jar")
-     ;; graphviz
-     colors
-     prodigy
-     search-engine
-
-     ;; github
-     (git :variables
-          ;;git-magit-status-fullscreen t
-          ;;magit-push-always-verify nil
-          ;;magit-save-repository-buffers 'dontask
-          ;;magit-revert-buffers 'silent
-          ;;magit-refs-show-commit-count 'all
-          ;;magit-revision-show-gravatars nil
-          )
-     ;; progrm
+     (plantuml :variables plantuml-jar-path "~/.spacemacs.d/plantuml.jar")
      ;; lsp
      ;; dap
-     org
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
-     spell-checking
-     ;; (syntax-checking :variables syntax-checking-enable-by-default nil
-     ;;                 syntax-checking-enable-tooltips nil)
-     syntax-checking
-
-     (spacemacs-layouts :variables
-                        layouts-enable-autosave nil
+     colors
+     prodigy
+     ;; github
+     search-engine
+     graphviz
+     (haskell :variables haskell-enable-hindent t
+              haskell-completion-backend 'intero)
+     (syntax-checking :variables syntax-checking-enable-by-default nil
+                      syntax-checking-enable-tooltips nil)
+     (spell-checking :variables spell-checking-enable-by-default nil)
+     ;; (vinegar :variables vinegar-reuse-dired-buffer t)
+     (spacemacs-layouts :variables layouts-enable-autosave nil
                         layouts-autosave-delay 300)
-
-     (ibuffer :variables
-              ibuffer-group-buffers-by 'projects)
-
-     (auto-completion :variables
-                      auto-completion-enable-sort-by-usage t
+     (git :variables
+          git-magit-status-fullscreen t
+          magit-push-always-verify nil
+          magit-save-repository-buffers 'dontask
+          magit-revert-buffers 'silent
+          magit-refs-show-commit-count 'all
+          magit-revision-show-gravatars nil)
+     (ibuffer :variables ibuffer-group-buffers-by 'projects)
+     (auto-completion :variables auto-completion-enable-sort-by-usage t
                       auto-completion-enable-snippets-in-popup t
                       auto-completion-tab-key-behavior 'cycle
-                      :disabled-for
-                      org
-                      markdown)
-
-     (osx :variables
-          osx-dictionary-dictionary-choice "Simplified Chinese - English"
+                      :disabled-for org markdown)
+     (osx :variables osx-dictionary-dictionary-choice "Simplified Chinese - English"
           osx-command-as 'super)
-
      restclient
-
-     (gtags :disabled-for
-            clojure
-            emacs-lisp
-            javascript
-            latex
-            python
-            shell-scripts)
-
-     (shell :variables
-            shell-default-shell 'ansi-term
+     (gtags :disabled-for clojure emacs-lisp javascript latex python shell-scripts)
+     (shell :variables shell-default-shell 'ansi-term
             shell-default-term-shell "/bin/zsh")
-
-     ;; docker chiense
+     ;; docker
      latex
      deft
      markdown
-
-     ;; programing
-     emacs-lisp
-     html
+     (org :variables org-want-todo-bindings t
+          org-enable-hugo-support t)
+     gpu
+     yaml
+     react
      (python :variables
-             python-shell-interpreter "ipython"
              python-test-runner '(nose pytest)
              python-backend 'lsp
-             python-lsp-server 'mypyls
+             python-lsp-server 'mspyls
              python-lsp-git-root "~/Github/python-language-server")
-
+     ;; (ruby :variables ruby-version-manager 'chruby)
+     ;; ruby-on-rails
+     lua
+     html
+     (javascript :variables javascript-backend 'lsp)
+     (typescript :variables
+                 typescript-fmt-on-save nil
+                 typescript-fmt-tool 'typescript-formatter
+                typescript-backend 'lsp)
+     emacs-lisp
+     (clojure :variables clojure-enable-fancify-symbols t)
+     racket
+     (c-c++ :variables
+            c-c++-default-mode-for-headers 'c++-mode
+            c-c++-backend 'lsp-ccls
+            c-c++-lsp-executable (file-truename "/usr/local/bin/ccls"))
+     zilongshanren
      (chinese :variables chinese-default-input-method 'pinyin
               chinese-enable-youdao-dict t)
-
-     ;; version-control
-     ;; treemacs
-
-
-     ;; mylayer
-     zhanghe
      )
-
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   ;; To use a local version of a package, use the `:location' property
+   ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(sicp ssh-agency anki-editor)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
-
-   ;; A list of packages that will not be installed and loaded.
-   dotspacemacs-excluded-packages '(vi-tilde-fringe ivy-rich)
-
-   ;; Defines the behaviour of Spacemacs when installing packages.
-   ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
-   ;; `used-only' installs only explicitly used packages and deletes any unused
-   ;; packages as well as their unused dependencies. `used-but-keep-unused'
-   ;; installs only the used packages but won't delete unused ones. `all'
-   ;; installs *all* packages supported by Spacemacs and never uninstalls them.
-   ;; (default is `used-only')
+   dotspacemacs-excluded-packages
+   '(org-projectile org-brain magit-gh-pulls magit-gitflow  evil-mc realgud tern company-tern
+                    evil-args evil-ediff evil-exchange evil-unimpaired
+                    evil-indent-plus volatile-highlights smartparens
+                    spaceline holy-mode skewer-mode rainbow-delimiters
+                    highlight-indentation vi-tilde-fringe eyebrowse ws-butler
+                    org-bullets smooth-scrolling org-repo-todo org-download org-timer
+                    livid-mode git-gutter git-gutter-fringe  evil-escape
+                    leuven-theme gh-md evil-lisp-state spray lorem-ipsum symon
+                    ac-ispell ace-jump-mode auto-complete auto-dictionary
+                    clang-format define-word google-translate disaster epic
+                    fancy-battery org-present orgit orglue spacemacs-theme
+                    helm-flyspell flyspell-correct-helm clean-aindent-mode
+                    helm-c-yasnippet ace-jump-helm-line helm-make magithub
+                    helm-themes helm-swoop helm-spacemacs-help smeargle
+                    ido-vertical-mode flx-ido company-quickhelp ivy-rich helm-purpose
+                    )
    dotspacemacs-install-packages 'used-only
-   dotspacemacs-delete-orphan-packages t
-   ))
+   dotspacemacs-delete-orphan-packages t))
 
 (defun dotspacemacs/init ()
   "Initialization:
@@ -168,10 +148,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
 
-   ;; Name of executable file pointing to emacs 27+. This executable must be
-   ;; in your PATH.
-   ;; (default "emacs")
-   dotspacemacs-emacs-pdumper-executable-file "emacs"
+   ;; File path pointing to emacs 27.1 executable compiled with support
+   ;; for the portable dumper (this is currently the branch pdumper).
+   ;; (default "emacs-27.0.50")
+   dotspacemacs-emacs-pdumper-executable-file "emacs-27.0.50"
 
    ;; Name of the Spacemacs dump file. This is the file will be created by the
    ;; portable dumper in the cache directory under dumps sub-directory.
@@ -205,7 +185,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-use-spacelpa nil
 
    ;; If non-nil then verify the signature for downloaded Spacelpa archives.
-   ;; (default t)
+   ;; (default nil)
    dotspacemacs-verify-spacelpa-archives nil
 
    ;; If non-nil then spacemacs will check for updates at startup
@@ -225,12 +205,10 @@ It should only modify the values of Spacemacs settings."
    ;; with `:variables' keyword (similar to layers). Check the editing styles
    ;; section of the documentation for details on available variables.
    ;; (default 'vim)
-   dotspacemacs-editing-style 'hybrid
+   dotspacemacs-editing-style 'vim
 
-   ;; If non-nil show the version string in the Spacemacs buffer. It will
-   ;; appear as (spacemacs version)@(emacs version)
-   ;; (default t)
-   dotspacemacs-startup-buffer-show-version t
+   ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
+   dotspacemacs-verbose-loading nil
 
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
@@ -252,11 +230,6 @@ It should only modify the values of Spacemacs settings."
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
 
-   ;; Default major mode for a new empty buffer. Possible values are mode
-   ;; names such as `text-mode'; and `nil' to use Fundamental mode.
-   ;; (default `text-mode')
-   dotspacemacs-new-empty-buffer-major-mode 'text-mode
-
    ;; Default major mode of the scratch buffer (default `text-mode')
    dotspacemacs-scratch-mode 'text-mode
 
@@ -267,15 +240,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light
-                         monokai
-                         tango
-                         tango-plus
-                         solarized-light
-                         solarized-dark
-                         )
-
+   dotspacemacs-themes '(solarized-light
+                         solarized-dark)
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
    ;; first three are spaceline themes. `doom' is the doom-emacs mode-line.
@@ -284,16 +250,15 @@ It should only modify the values of Spacemacs settings."
    ;; spaceline theme. Value can be a symbol or list with additional properties.
    ;; (default '(spacemacs :separator wave :separator-scale 1.5))
    dotspacemacs-mode-line-theme '(spacemacs :separator wave :separator-scale 1.5)
-
-   ;; If non-nil the cursor color matches the state color in GUI Emacs.
-   ;; (default t)
+   ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
 
-   ;; Default font or prioritized list of fonts.  测试
-   dotspacemacs-default-font '("WenQuanYi Zen Hei Mono"
-                               :size 19
-                               :weight regular
-                               :width regular)
+   ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
+   ;; quickly tweak the mode-line size to make separators look not too crappy.
+   dotspacemacs-default-font '("Source Code Pro"
+                               :size 14
+                               :weight normal
+                               :width normal)
 
    ;; The leader key (default "SPC")
    dotspacemacs-leader-key "SPC"
@@ -314,10 +279,8 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-major-mode-leader-key ","
 
    ;; Major mode leader key accessible in `emacs state' and `insert state'.
-   ;; (default "C-M-m" for terminal mode, "<M-return>" for GUI mode).
-   ;; Thus M-RET should work as leader key in both GUI and terminal modes.
-   ;; C-M-m also should work in terminal mode, but not in GUI mode.
-   dotspacemacs-major-mode-emacs-leader-key (if window-system "<M-return>" "C-M-m")
+   ;; (default "C-M-m")
+   dotspacemacs-major-mode-emacs-leader-key "C-M-m"
 
    ;; These variables control whether separate commands are bound in the GUI to
    ;; the key pairs `C-i', `TAB' and `C-m', `RET'.
@@ -396,11 +359,6 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup t
 
-   ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
-   ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
-   ;; borderless fullscreen. (default nil)
-   dotspacemacs-undecorated-at-startup nil
-
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
@@ -428,14 +386,10 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-smooth-scrolling t
 
    ;; Control line numbers activation.
-   ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
-   ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
-   ;; numbers are relative. If set to `visual', line numbers are also relative,
-   ;; but lines are only visual lines are counted. For example, folded lines
-   ;; will not be counted and wrapped lines are counted as multiple lines.
+   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
+   ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
-   ;;   :visual nil
    ;;   :disabled-for-modes dired-mode
    ;;                       doc-view-mode
    ;;                       markdown-mode
@@ -443,7 +397,6 @@ It should only modify the values of Spacemacs settings."
    ;;                       pdf-view-mode
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
-   ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
    dotspacemacs-line-numbers nil
 
@@ -456,7 +409,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-smartparens-strict-mode nil
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
-   ;; over any automatically added closing parenthesis, bracket, quote, etc...
+   ;; over any automatically added closing parenthesis, bracket, quote, etc…
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
    dotspacemacs-smart-closing-parenthesis nil
 
@@ -483,7 +436,7 @@ It should only modify the values of Spacemacs settings."
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
    ;; (default '("rg" "ag" "pt" "ack" "grep"))
-   dotspacemacs-search-tools '("ag" "rg" "pt" "ack" "grep")
+   dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
 
    ;; Format specification for setting the frame title.
    ;; %a - the `abbreviated-file-name', or `buffer-name'
@@ -510,17 +463,10 @@ It should only modify the values of Spacemacs settings."
 
    ;; Delete whitespace while saving buffer. Possible values are `all'
    ;; to aggressively delete empty line and long sequences of whitespace,
-   ;; `trailing' to delete only the whitespace at end of lines, `changed' to
+   ;; `trailing' to delete only the whitespace at end of lines, `changed'to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
-
-   ;; If non nil activate `clean-aindent-mode' which tries to correct
-   ;; virtual indentation of simple modes. This can interfer with mode specific
-   ;; indent handling like has been reported for `go-mode'.
-   ;; If it does deactivate it here.
-   ;; (default t)
-   dotspacemacs-use-clean-aindent-mode t
 
    ;; Either nil or a number of seconds. If non-nil zone out after the specified
    ;; number of seconds. (default nil)
@@ -539,17 +485,19 @@ variables declared in `~/.spacemacs.env' or `~/.spacemacs.d/.spacemacs.env'.
 See the header of this file for more information."
   (spacemacs/load-spacemacs-env))
 
-(defun dotspacemacs/user-init ()
-  "This function is called immediately after `dotspacemacs/init', before layer
-configuration.
-It is mostly for variables that should be set before packages are loaded.
-If you are unsure, try setting them in `dotspacemacs/user-config' first."
+(defun dotspacemacs/user-load ()
+  "Library to load while dumping.
+This function is called only while dumping Spacemacs configuration. You can
+`require' or `load' the libraries of your choice that will be included in the
+dump."
+  )
 
-  (setq configuration-layer-elpa-archives
-        '(("melpa-cn" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
+(defun dotspacemacs/user-init ()
+  (setq-default configuration-layer-elpa-archives
+  '(("melpa-cn" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
           ("org-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")
           ("gnu-cn"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")))
-
+  
   (setq term-char-mode-point-at-process-mark nil)
 
   ;; https://github.com/syl20bnr/spacemacs/issues/2705
@@ -558,67 +506,29 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
         "-o ControlMaster=auto -o ControlPath='tramp.%%C' -o ControlPersist=no")
 
   ;; ss proxy. But it will cause anacond-mode failed.
-  ;; (setq socks-server '("Default server" "127.0.0.1" 1080 5))
-
-  ;; (setq evil-shift-round nil)
-  ;; (setq byte-compile-warnings '(not obsolete))
-  ;; (setq warning-minimum-level :error)
+  (setq socks-server '("Default server" "127.0.0.1" 1080 5))
+  (setq evil-shift-round nil)
+  (setq byte-compile-warnings '(not obsolete))
+  (setq warning-minimum-level :error)
 
   ;; https://github.com/syl20bnr/spacemacs/issues/8901
-  ;; this issue maybe already fixed
-  ;; (setq-default quelpa-build-tar-executable "/usr/local/bin/gtar")
-
+  (setq-default quelpa-build-tar-executable "/usr/local/bin/gtar")
   ;; hack for remove purpose mode
   ;; (setq purpose-mode nil)
   )
 
-
-
-(defun dotspacemacs/user-load ()
-  "Library to load while dumping.
-This function is called only while dumping Spacemacs configuration. You can
-`require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
-
 (defun dotspacemacs/user-config ()
-  "This function is called at the very end of Spacemacs startup, after layer
-configuration.
-Put your configuration code here, except for variables that should be set
-before packages are loaded."
-
-  ;; I do not use Emacs without following settings!!!
-  (global-set-key (kbd "C-h") 'delete-backward-char)
-  (global-set-key (kbd "M-h") 'help-command)
-  (global-set-key (kbd "C-w") 'backward-kill-word)
-  (global-set-key (kbd "s-d") 'spacemacs/duplicate-line-or-region)
-  (global-set-key (kbd "s-f") 'swiper)
-  (global-set-key (kbd "<f9>") 'isearch-repeat-backward)
-  (global-set-key (kbd "M-h M-v") 'find-variable)
-  (global-set-key (kbd "M-h M-f") 'find-function)
-  (global-set-key (kbd "M-h M-k") 'find-funciton-on-key)
-  (define-key isearch-mode-map "\C-h" 'isearch-delete-char)
-  (global-linum-mode 1)
-  (setq-default line-spacing 4)
-
-  ;; evil escape
-  (setq-default evil-escape-key-sequence "jk")
-
-  ;; TAB插入空格
-  (setq-default indent-tabs-mode nil)
-  ;; tab 4个字符宽度
-  (setq default-tab-width 4)
-
-  ;; 解决org表格里面中英文对齐的问题
+   
+  ;;解决org表格里面中英文对齐的问题 
   (when (configuration-layer/layer-usedp 'chinese)
     (when (and (spacemacs/system-is-mac) window-system)
       (spacemacs//set-monospaced-font "Source Code Pro" "Hiragino Sans GB" 14 16)))
 
   ;; enable org-protocol
-  ;; (server-start)
-  ;; (require 'org-protocol)
+  (server-start)
+  (require 'org-protocol)
 
-  ;; Setting chinese font
+  ;; Setting Chinese Font
   (when (and (spacemacs/system-is-mswindows) window-system)
     (setq ispell-program-name "aspell")
     (setq w32-pass-alt-to-system nil)
@@ -632,17 +542,23 @@ before packages are loaded."
 
   ;; force horizontal split window
   (setq split-width-threshold 120)
+  ;; (linum-relative-on)
 
   (spacemacs|add-company-backends :modes text-mode)
 
-  (global-hungry-delete-mode t)
+  (add-hook 'doc-view-mode-hook 'auto-revert-mode)
 
+  ;; temp fix for ivy-switch-buffer
+  ;; (spacemacs/set-leader-keys "bb" 'helm-mini)
+
+  (global-hungry-delete-mode t)
   (spacemacs|diminish helm-gtags-mode)
   (spacemacs|diminish ggtags-mode)
   (spacemacs|diminish which-key-mode)
   (spacemacs|diminish spacemacs-whitespace-cleanup-mode)
   (spacemacs|diminish counsel-mode)
 
+  (evilified-state-evilify-map special-mode-map :mode special-mode)
 
   (add-to-list 'auto-mode-alist
                '("Capstanfile\\'" . yaml-mode))
@@ -658,8 +574,6 @@ before packages are loaded."
         (indent-line-to (js--proper-indentation parse-status))
         (when (> offset 0) (forward-char offset)))))
 
-  (evilified-state-evilify-map special-mode-map :mode special-mode)
-
   (global-set-key (kbd "<backtab>") 'un-indent-by-removing-4-spaces)
   (defun un-indent-by-removing-4-spaces ()
     "remove 4 spaces from beginning of of line"
@@ -673,15 +587,15 @@ before packages are loaded."
         (when (looking-at (concat "^" (make-string tab-width ?\ )))
           (replace-match "")))))
 
-  ;; toggle major mode
-  (defun zhanghe/toggle-major-mode ()
+  (defun zilongshanren/toggle-major-mode ()
     (interactive)
     (if (eq major-mode 'fundamental-mode)
         (set-auto-mode)
       (fundamental-mode)))
-  (spacemacs/set-leader-keys "otm" 'zhanghe/toggle-major-mode)
+  (spacemacs/set-leader-keys "otm" 'zilongshanren/toggle-major-mode)
 
   (setq inhibit-compacting-font-caches t)
+  (global-display-line-numbers-mode -1)
 
   (defun moon-override-yank-pop (&optional arg)
     "Delete the region before inserting poped string."
@@ -689,7 +603,6 @@ before packages are loaded."
       (kill-region (region-beginning) (region-end))))
 
   (advice-add 'counsel-yank-pop :before #'moon-override-yank-pop)
-
   (setq ivy-more-chars-alist '((counsel-ag . 2)
                                (counsel-grep .2)
                                (t . 3)))
@@ -723,23 +636,46 @@ before packages are loaded."
 
            (add-hook 'projectile-mode-hook '(lambda () (remove-hook 'find-file-hook #'projectile-find-file-hook-function)))))
 
-  ;; (setq exec-path (cons "/Users/zhanghe/.nvm/versions/node/v10.16.0/bin/" exec-path))
-  ;; (setenv "PATH" (concat "/Users/zhanghe/.nvm/versions/node/v10.16.0/bin:" (getenv "PATH")))
+  (setq exec-path (cons "/Users/lionqu/.nvm/versions/node/v10.16.0/bin/" exec-path))
+  (setenv "PATH" (concat "/Users/lionqu/.nvm/versions/node/v10.16.0/bin:" (getenv "PATH")))
 
+  (defun counsel-locate-cmd-es (input)
+    "Return a shell command based on INPUT."
+    (counsel-require-program "es.exe")
+    (encode-coding-string (format "es.exe -i -r -p %s"
+                                  (counsel-unquote-regex-parens
+                                   (ivy--regex input t)))
+                          'gbk))
   ;; (add-hook 'text-mode-hook 'spacemacs/toggle-spelling-checking-on)
 
   (add-hook 'org-mode-hook 'emojify-mode)
   (add-hook 'org-mode-hook 'auto-fill-mode)
+
+  ;; https://emacs-china.org/t/ox-hugo-auto-fill-mode-markdown/9547/4
+  (defadvice org-hugo-paragraph (before org-hugo-paragraph-advice
+                                        (paragraph contents info) activate)
+    "Join consecutive Chinese lines into a single long line without
+unwanted space when exporting org-mode to hugo markdown."
+    (let* ((origin-contents (ad-get-arg 1))
+           (fix-regexp "[[:multibyte:]]")
+           (fixed-contents
+            (replace-regexp-in-string
+             (concat
+              "\\(" fix-regexp "\\) *\n *\\(" fix-regexp "\\)") "\\1\\2" origin-contents)))
+      (ad-set-arg 1 fixed-contents)))
 
   ;; fix for the magit popup doesn't have a q keybindings
   (with-eval-after-load 'transient
     (transient-bind-q-to-quit))
 
   ;; fix for the lsp error
-  (defvar spacemacs-jump-handlers-fundamental-mode nil)
+  (defvar spacemacs-jump-handlers-fundamental-mode nil))
 
-  ;; custom file
-  (setq custom-file (expand-file-name "custom.el" dotspacemacs-directory))
-  (load custom-file 'no-error 'no-message)
-  )
-
+(setq custom-file (expand-file-name "custom.el" dotspacemacs-directory))
+(load custom-file 'no-error 'no-message)
+(defun dotspacemacs/emacs-custom-settings ()
+  "Emacs custom settings.
+This is an auto-generated function, do not modify its content directly, use
+Emacs customize menu instead.
+This function is called at the very end of Spacemacs initialization."
+)

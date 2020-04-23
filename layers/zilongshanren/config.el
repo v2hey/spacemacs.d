@@ -9,13 +9,13 @@
 
 (if (spacemacs/system-is-mswindows)
     (setq
-     org-agenda-dir ""
-     deft-dir ""
-     blog-admin-dir "")
+     org-agenda-dir "f:/org-notes"
+     deft-dir "f:/org-notes"
+     blog-admin-dir "f:/zilongshanren.com")
   (setq
-   org-agenda-dir "~/chest/org-notes"
-   deft-dir "~/chest/org-notes"
-   blog-admin-dir ""))
+   org-agenda-dir "~/org-notes"
+   deft-dir "~/org-notes"
+   blog-admin-dir "~/zilongshanren.com"))
 
 
 ;;load sensitive data

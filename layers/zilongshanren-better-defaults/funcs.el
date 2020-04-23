@@ -1,21 +1,19 @@
-;; better defaut funcs
+;;; funcs.el --- zilongshanren Layer packages File for Spacemacs
+;;
+;; Copyright (c) 2015-2016 zilongshanren 
+;;
+;; Author: zilongshanren <guanghui8827@gmail.com>
+;; URL: https://github.com/zilongshanren/spacemacs-private
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; License: GPLv3
 
-
-;;http://emacsredux.com/blog/2013/03/26/smarter-open-line/
-(defun zhanghe/smart-open-line ()
-  "Insert an empty line after the current line.
-Position the cursor at its beginning, according to the current mode."
-  (interactive)
-  (move-end-of-line nil)
-  (newline-and-indent))
-
-
-(defun zhanghe/indent-buffer()
+(defun indent-buffer()
   (interactive)
   (indent-region (point-min) (point-max)))
 
-
-(defun zhanghe/indent-region-or-buffer()
+(defun indent-region-or-buffer()
   (interactive)
   (save-excursion
     (if (region-active-p)
@@ -23,23 +21,19 @@ Position the cursor at its beginning, according to the current mode."
           (indent-region (region-beginning) (region-end))
           (message "Indent selected region."))
       (progn
-        (zhanghe/indent-buffer)
+        (indent-buffer)
         (message "Indent buffer.")))))
 
-
-(defun zhanghe/show-current-buffer-major-mode ()
+;;http://emacsredux.com/blog/2013/03/26/smarter-open-line/
+(defun zilongshanren/smart-open-line ()
+  "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode."
   (interactive)
-  (describe-variable 'major-mode))
+  (move-end-of-line nil)
+  (newline-and-indent))
 
 
-(defun zhanghe/mark-region-and-edit ()
-  (interactive)
-  (if (region-active-p)
-      (mc/mark-next-like-this 1)
-    (er/expand-region 1)))
-
-
-(defun zhanghe/rename-file-and-buffer ()
+(defun zilongshanren/rename-file-and-buffer ()
   "Rename the current buffer and file it is visiting."
   (interactive)
   (let ((filename (buffer-file-name)))
@@ -51,7 +45,6 @@ Position the cursor at its beginning, according to the current mode."
          (t
           (rename-file filename new-name t)
           (set-visited-file-name new-name t t)))))))
-
 
 (defun zilongshanren/yank-to-end-of-line ()
   "Yank to end of line."
@@ -137,7 +130,7 @@ Position the cursor at its beginning, according to the current mode."
         (dired-find-alternate-file)
       (dired-find-file-other-window))))
 
-(defun zhanghe/dired-do-command (command)
+(defun zilongshanren/dired-do-command (command)
   "Run COMMAND on marked files. Any files not already open will be opened.
 After this command has been run, any buffers it's modified will remain
 open and unsaved."
@@ -148,12 +141,12 @@ open and unsaved."
             (call-interactively command))
           (dired-get-marked-files))))
 
-(defun zhanghe/dired-up-directory()
+(defun zilongshanren/dired-up-directory()
   "goto up directory and resue buffer"
   (interactive)
   (find-alternate-file ".."))
 
-(defun zhanghe/insert-space-after-point ()
+(defun zilongshanren/insert-space-after-point ()
   (interactive)
   (save-excursion (insert " ")))
 
