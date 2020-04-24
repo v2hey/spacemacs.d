@@ -79,7 +79,15 @@ This function should only modify configuration layer settings."
      yaml
      react
      (python :variables
+             python-shell-interpreter "python3"
              python-test-runner '(nose pytest)
+             ;; python-save-before-test nil
+             ;; python-fill-column 99
+             python-auto-set-local-pyenv-version 'on-project-switch
+             ;; python-auto-set-local-pyvenv-virtualenv 'on-project-switch
+             python-formatter 'black 
+             python-format-on-save t
+             python-sort-imports-on-save t
              python-backend 'lsp
              python-lsp-server 'mspyls
              python-lsp-git-root "~/Github/python-language-server")
@@ -540,8 +548,18 @@ dump."
   (define-key evil-insert-state-map (kbd "C-w") 'backward-kill-word)
   (define-key evil-insert-state-map (kbd "s-d") 'zilongshanren/duplicate-line-or-region)
   (setq-default line-spacing 6)
+  (global-linum-mode 1)
   ;; (setq-default evil-escape-delay 0.2)  
   ;; (setq-default evil-escape-key-sequence "kj")
+  ;; python venv
+  (defun pyvenv-autoload ()
+    (require 'projectile)
+    (let* ((pdir (projectile-project-root)) (pfile (concat pdir ".venv")))
+      (if (file-exists-p pfile)
+          (pyvenv-workon (with-temp-buffer
+                           (insert-file-contents pfile)
+                           (nth 0 (split-string (buffer-string))))))))
+  (add-hook 'python-mode-hook 'pyvenv-autoload)
   
   ;;解决org表格里面中英文对齐的问题 
   (when (configuration-layer/layer-usedp 'chinese)
