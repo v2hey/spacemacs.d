@@ -256,7 +256,7 @@ It should only modify the values of Spacemacs settings."
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 14
+                               :size 16
                                :weight normal
                                :width normal)
 
@@ -518,7 +518,31 @@ dump."
   )
 
 (defun dotspacemacs/user-config ()
-   
+
+  ;; i don't use emacs without follow settings
+  (define-key evil-normal-state-map (kbd "C-e") 'move-end-of-line)
+  (define-key evil-normal-state-map (kbd "C-a") 'move-beginning-of-line)
+  (define-key evil-normal-state-map (kbd "C-p") 'previous-line)
+  (define-key evil-normal-state-map (kbd "C-n") 'next-line)
+
+  ;; evil-insert-state
+  ;; move
+  (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
+  (define-key evil-insert-state-map (kbd "C-a") 'move-beginning-of-line)
+  (define-key evil-insert-state-map (kbd "C-p") 'previous-line)
+  (define-key evil-insert-state-map (kbd "C-n") 'next-line)
+
+  ;; edit
+  (define-key evil-insert-state-map (kbd "C-u") 'kill-whole-line)
+  (define-key evil-insert-state-map (kbd "C-e") 'move-end-of-line)
+  (define-key evil-insert-state-map (kbd "C-h") 'delete-backward-char)
+  (define-key evil-insert-state-map (kbd "C-d") 'delete-forward-char)
+  (define-key evil-insert-state-map (kbd "C-w") 'backward-kill-word)
+  (define-key evil-insert-state-map (kbd "s-d") 'zilongshanren/duplicate-line-or-region)
+  (setq-default line-spacing 6)
+  ;; (setq-default evil-escape-delay 0.2)  
+  ;; (setq-default evil-escape-key-sequence "kj")
+  
   ;;解决org表格里面中英文对齐的问题 
   (when (configuration-layer/layer-usedp 'chinese)
     (when (and (spacemacs/system-is-mac) window-system)

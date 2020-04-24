@@ -81,7 +81,6 @@
 
           (when (functionp 'yas-minor-mode)
             (yas-minor-mode t)))))
-    
     (add-hook 'lsp-after-open-hook 'zilongshanren-refresh-imenu-index)
 
     (defun hidden-lsp-ui-sideline ()
