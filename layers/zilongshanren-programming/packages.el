@@ -46,6 +46,7 @@
         robe
         lsp-mode
         typescript-mode
+        ;; auto-virtualenvwrapper
         ))
 
 (defun zilongshanren-programming/post-init-typescript-mode ()
@@ -638,3 +639,10 @@
     (setq company-c-headers-path-user
           (quote
            ("/Users/guanghui/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))))
+
+;; (defun zilongshanren-programming/init-auto-virtualenvwrapper ()
+;;   (use-package auto-virtualenvwrapper
+;;     :defer t
+;;     :init
+;;     (progn
+;;       (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate))))

@@ -79,11 +79,11 @@ This function should only modify configuration layer settings."
      yaml
      react
      (python :variables
-             python-shell-interpreter "python3"
+             python-shell--interpreter "ipython"
              python-test-runner '(nose pytest)
              ;; python-save-before-test nil
              ;; python-fill-column 99
-             python-auto-set-local-pyenv-version 'on-project-switch
+             ;; python-auto-set-local-pyenv-version 'on-project-switch
              ;; python-auto-set-local-pyvenv-virtualenv 'on-project-switch
              python-formatter 'black 
              python-format-on-save t
@@ -554,13 +554,13 @@ dump."
   ;; python venv
   (defun pyvenv-autoload ()
     (require 'projectile)
-    (let* ((pdir (projectile-project-root)) (pfile (concat pdir ".venv")))
+    (let* ((pdir (projectile-project-root)) (pfile (concat pdir ".workon")))
       (if (file-exists-p pfile)
           (pyvenv-workon (with-temp-buffer
                            (insert-file-contents pfile)
                            (nth 0 (split-string (buffer-string))))))))
   (add-hook 'python-mode-hook 'pyvenv-autoload)
-  
+ 
   ;;解决org表格里面中英文对齐的问题 
   (when (configuration-layer/layer-usedp 'chinese)
     (when (and (spacemacs/system-is-mac) window-system)
