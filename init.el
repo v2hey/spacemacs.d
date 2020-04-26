@@ -540,7 +540,7 @@ dump."
   (define-key evil-insert-state-map (kbd "C-w") 'backward-kill-word)
   (define-key evil-insert-state-map (kbd "s-d") 'zilongshanren/duplicate-line-or-region)
   (setq-default line-spacing 6)
-  (linum-mode t)
+  (global-linum-mode t)
   ;; (setq-default evil-escape-delay 0.2)  
   ;; (setq-default evil-escape-key-sequence "kj")
   
