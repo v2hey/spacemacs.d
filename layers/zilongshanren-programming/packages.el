@@ -46,6 +46,7 @@
         robe
         lsp-mode
         typescript-mode
+        ;; auto-virtualenvwrapper
         ))
 
 (defun zilongshanren-programming/post-init-typescript-mode ()
@@ -197,7 +198,8 @@
 (defun zilongshanren-programming/post-init-python ()
   (add-hook 'python-mode-hook #'(lambda () (modify-syntax-entry ?_ "w")))
   ;; if you use pyton3, then you could comment the following line
-  (setq python-shell-interpreter "python"))
+  ;; (setq python-shell-interpreter "python")
+  )
 
 (defun zilongshanren-programming/post-init-js-doc ()
   (setq js-doc-mail-address "guanghui8827@gmail.com"
@@ -637,3 +639,10 @@
     (setq company-c-headers-path-user
           (quote
            ("/Users/guanghui/cocos2d-x/cocos/platform" "/Users/guanghui/cocos2d-x/cocos" "." "/Users/guanghui/cocos2d-x/cocos/audio/include/")))))
+
+;; (defun zilongshanren-programming/init-auto-virtualenvwrapper ()
+;;   (use-package auto-virtualenvwrapper
+;;     :defer t
+;;     :init
+;;     (progn
+;;       (add-hook 'python-mode-hook #'auto-virtualenvwrapper-activate))))
