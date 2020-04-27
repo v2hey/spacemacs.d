@@ -560,7 +560,15 @@ dump."
                            (insert-file-contents pfile)
                            (nth 0 (split-string (buffer-string))))))))
   (add-hook 'python-mode-hook 'pyvenv-autoload)
- 
+  (remove-hook 'python-mode-hook 'which-function-mode)
+  (remove-hook 'python-mode-hook 'lsp-ui-sideline-mode)
+
+  ;; 解决python-mode下面， which-function-mode占用 cpu过高导致卡顿
+  ;; (with-eval-after-load 'python-mode
+  ;;   (which-function-mode -1)
+  ;;   (lsp-ui-sideline-mode -1)
+  ;;  )
+
   ;;解决org表格里面中英文对齐的问题 
   (when (configuration-layer/layer-usedp 'chinese)
     (when (and (spacemacs/system-is-mac) window-system)
