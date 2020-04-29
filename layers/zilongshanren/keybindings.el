@@ -121,6 +121,12 @@
 (global-set-key (kbd "<f1>") 'zilongshanren/helm-hotspots)
 (spacemacs/set-leader-keys "oo" 'zilongshanren/helm-hotspots)
 
+;; lsp ide 
+(spacemacs/set-leader-keys "rr" 'lsp-ui-peek-find-references)
+
+;; find-file-in-project
+;; (spacemacs/set-leader-keys "rr" 'lsp-ui-peek-find-references)
+
 (spacemacs/set-leader-keys "oc" 'my-auto-update-tags-when-save)
 ;; (spacemacs/set-leader-keys "op" 'zilongshanren/org-save-and-export)
 (spacemacs/set-leader-keys "fR" 'zilongshanren/rename-file-and-buffer)
